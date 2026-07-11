@@ -1,6 +1,6 @@
 ﻿using CaixaFestejos.Models;
 
-namespace CaixaFestejos.Services.Interfaces;
+namespace CaixaFestejos.Services;
 
     public interface IProdutoService
     {

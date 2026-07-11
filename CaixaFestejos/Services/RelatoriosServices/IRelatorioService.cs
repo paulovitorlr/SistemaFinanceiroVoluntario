@@ -1,10 +1,9 @@
 ﻿using CaixaFestejos.Models;
 
-namespace CaixaFestejos.Services.Interfaces;
+namespace CaixaFestejos.Services;
 
-    public interface IRelatorioService
-    {
-        ResumoFechamento ObterResumo();
-        List<ProdutoVendido> ObterVendasPorProduto();
-        void ExportarCsv(string caminho);
-    }
+public interface IRelatorioService
+{
+    ResumoFechamento ObterResumo();
+    List<ProdutoVendido> ObterVendasPorProduto();
+}

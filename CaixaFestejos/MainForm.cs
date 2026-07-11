@@ -1,6 +1,7 @@
 using CaixaFestejos.Data;
 using CaixaFestejos.Models;
-using CaixaFestejos.Services.Interfaces;
+using CaixaFestejos.Repositories;
+using CaixaFestejos.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,6 +18,7 @@ namespace CaixaFestejos
         private readonly IProdutoService _produtoService;
         private readonly IVendaService _vendaService;
         private readonly IRelatorioService _relatorioService;
+        private readonly IExportacaoService _exportacaoService;
         private List<Produto> _produtos = new();
         private readonly List<ItemPedido> _pedidoAtual = new();
 
@@ -45,6 +47,20 @@ namespace CaixaFestejos
 
         public MainForm()
         {
+            var database = new Database();
+
+            _produtoService = new ProdutoService(
+                new ProdutoRepository(database));
+
+            _vendaService = new VendaService(
+                new VendaRepository(database));
+
+            _relatorioService = new RelatorioService(
+                new RelatorioRepository(database));
+
+            _exportacaoService = new ExportacaoService(
+                new ExportacaoRepository(database));
+
             Text = "Caixa dos Festejos";
             Width = 960;
             Height = 700;
@@ -57,7 +73,8 @@ namespace CaixaFestejos
             tabs.TabPages.Add(CriarAbaFechamento());
             tabs.SelectedIndexChanged += (s, e) =>
             {
-                if (tabs.SelectedIndex == 2) AtualizarFechamento();
+                if (tabs.SelectedIndex == 2)
+                    AtualizarFechamento();
             };
 
             Controls.Add(tabs);
@@ -306,26 +323,32 @@ namespace CaixaFestejos
 
         private void BtnFinalizar_Click(object? sender, EventArgs e)
         {
-            decimal total = TotalPedido();
-            decimal recebido = _numRecebido.Value;
-            if (_pedidoAtual.Count == 0 || recebido < total) return;
+            try
+            {
+                _vendaService.RegistrarVenda(
+                    _pedidoAtual,
+                    _numRecebido.Value);
 
-            decimal troco = recebido - total;
-            decimal custoTotal = _pedidoAtual.Sum(i => i.Custo * i.Quantidade);
+                MessageBox.Show(
+                    this,
+                    "Venda registrada com sucesso.",
+                    "Venda finalizada",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
-            _vendaService.RegistrarVenda(
-                                            total,
-                                            custoTotal,
-                                            recebido,
-                                            troco,
-                                            _pedidoAtual);
-
-            MessageBox.Show(this, $"Venda registrada: {Fmt(total)}\nTroco: {Fmt(troco)}",
-                "Venda finalizada", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            _pedidoAtual.Clear();
-            _numRecebido.Value = 0;
-            RenderPedido();
+                _pedidoAtual.Clear();
+                _numRecebido.Value = 0;
+                RenderPedido();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    this,
+                    ex.Message,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
         }
 
         // =========================================================
@@ -542,7 +565,7 @@ namespace CaixaFestejos
             };
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                _relatorioService.ExportarCsv(dialog.FileName);
+                _exportacaoService.ExportarCsv(dialog.FileName);
                 MessageBox.Show(this, "Relatório exportado com sucesso.", "Exportado",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

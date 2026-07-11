@@ -1,6 +1,6 @@
 ﻿using CaixaFestejos.Models;
 using CaixaFestejos.Repositories;
-using CaixaFestejos.Services.Interfaces;
+using CaixaFestejos.Services;
 
 namespace CaixaFestejos.Services
 {

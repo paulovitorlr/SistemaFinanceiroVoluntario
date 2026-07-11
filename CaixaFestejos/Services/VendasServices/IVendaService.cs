@@ -1,15 +1,10 @@
 ﻿using CaixaFestejos.Models;
 
-namespace CaixaFestejos.Services.Interfaces;
+namespace CaixaFestejos.Services;
 
     public interface IVendaService
     {
-        void RegistrarVenda(
-            decimal total,
-            decimal custoTotal,
-            decimal recebido,
-            decimal troco,
-            List<ItemPedido> itens);
+        void RegistrarVenda(List<ItemPedido> itens, decimal recebido);
 
         void ZerarVendas();
     }
