@@ -1,6 +1,6 @@
 ﻿using CaixaFestejos.Models;
 
-namespace CaixaFestejos.Repositories.Interfaces
+namespace CaixaFestejos.Repositories
 {
     public interface IProdutoRepository
     {

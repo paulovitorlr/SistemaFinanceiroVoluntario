@@ -1,9 +1,9 @@
 ﻿using CaixaFestejos.Data;
 using CaixaFestejos.Models;
-using CaixaFestejos.Repositories.Interfaces;
+using CaixaFestejos.Repositories;
 
-namespace CaixaFestejos.Repositories
-{
+namespace CaixaFestejos.Repositories;
+
     public class VendaRepository : IVendaRepository
     {
         private readonly Database _database;
@@ -260,4 +260,3 @@ namespace CaixaFestejos.Repositories
             transaction.Commit();
         }
     }
-}

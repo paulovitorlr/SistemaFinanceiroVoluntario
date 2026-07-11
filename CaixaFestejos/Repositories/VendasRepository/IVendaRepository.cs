@@ -1,7 +1,7 @@
 ﻿using CaixaFestejos.Models;
 
-namespace CaixaFestejos.Repositories.Interfaces
-{
+namespace CaixaFestejos.Repositories;
+
     public interface IVendaRepository
     {
         void Registrar(Venda venda);
@@ -14,4 +14,3 @@ namespace CaixaFestejos.Repositories.Interfaces
 
         void Zerar();
     }
-}

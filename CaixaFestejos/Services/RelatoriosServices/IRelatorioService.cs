@@ -1,11 +1,10 @@
 ﻿using CaixaFestejos.Models;
 
-namespace CaixaFestejos.Repositories
-{
-    public interface IRelatorioRepository
+namespace CaixaFestejos.Services.Interfaces;
+
+    public interface IRelatorioService
     {
         ResumoFechamento ObterResumo();
-
         List<ProdutoVendido> ObterVendasPorProduto();
+        void ExportarCsv(string caminho);
     }
-}
