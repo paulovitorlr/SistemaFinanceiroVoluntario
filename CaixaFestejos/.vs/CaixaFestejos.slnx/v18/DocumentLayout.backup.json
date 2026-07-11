@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "E:\\Fotos Carioca Nautica\\CaixaFestejos-WinForms\\CaixaFestejos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\fotos carioca nautica\\caixafestejos-winforms\\caixafestejos\\data\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:data\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\fotos carioca nautica\\caixafestejos-winforms\\caixafestejos\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\fotos carioca nautica\\caixafestejos-winforms\\caixafestejos\\data\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:data\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\fotos carioca nautica\\caixafestejos-winforms\\caixafestejos\\models\\resumofechamento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,30 +30,30 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "MainForm.cs",
               "DocumentMoniker": "E:\\Fotos Carioca Nautica\\CaixaFestejos-WinForms\\CaixaFestejos\\MainForm.cs",
               "RelativeDocumentMoniker": "MainForm.cs",
               "ToolTip": "E:\\Fotos Carioca Nautica\\CaixaFestejos-WinForms\\CaixaFestejos\\MainForm.cs",
               "RelativeToolTip": "MainForm.cs",
-              "ViewState": "AgIAAAcCAAAAAAAAAAAmwCgCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABsCAAAAAAAAAAAAwF8BAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-10T17:26:09.097Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "DatabaseService.cs",
               "DocumentMoniker": "E:\\Fotos Carioca Nautica\\CaixaFestejos-WinForms\\CaixaFestejos\\Data\\DatabaseService.cs",
               "RelativeDocumentMoniker": "Data\\DatabaseService.cs",
               "ToolTip": "E:\\Fotos Carioca Nautica\\CaixaFestejos-WinForms\\CaixaFestejos\\Data\\DatabaseService.cs",
               "RelativeToolTip": "Data\\DatabaseService.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAwwCAAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAOgAAAAAAAAAAAAswGUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-10T17:26:04.473Z",
               "EditorCaption": ""
@@ -68,8 +68,7 @@
               "RelativeToolTip": "Models\\Produto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-10T17:26:01.794Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-10T17:26:01.794Z"
             },
             {
               "$type": "Document",
@@ -81,8 +80,7 @@
               "RelativeToolTip": "Models\\ResumoFechamento.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-10T17:25:59.651Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-10T17:25:59.651Z"
             },
             {
               "$type": "Document",
@@ -94,8 +92,7 @@
               "RelativeToolTip": "README.md",
               "ViewState": "AgIAACQAAAAAAAAAAAAAAFUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-07-10T11:34:29.011Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-10T11:34:29.011Z"
             }
           ]
         }
