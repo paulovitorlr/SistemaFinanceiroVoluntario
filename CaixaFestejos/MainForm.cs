@@ -1,5 +1,6 @@
 using CaixaFestejos.Data;
 using CaixaFestejos.Models;
+using CaixaFestejos.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,7 +14,9 @@ namespace CaixaFestejos
     {
         private static readonly CultureInfo PtBr = new("pt-BR");
 
-        private readonly DatabaseService _db = new();
+        private readonly IProdutoService _produtoService;
+        private readonly IVendaService _vendaService;
+        private readonly IRelatorioService _relatorioService;
         private List<Produto> _produtos = new();
         private readonly List<ItemPedido> _pedidoAtual = new();
 
@@ -188,7 +191,7 @@ namespace CaixaFestejos
 
         private void CarregarProdutos()
         {
-            _produtos = _db.ListarProdutos();
+            _produtos = _produtoService.ListarProdutos();
             RenderCardapio();
             RenderGridProdutos();
         }
@@ -310,7 +313,12 @@ namespace CaixaFestejos
             decimal troco = recebido - total;
             decimal custoTotal = _pedidoAtual.Sum(i => i.Custo * i.Quantidade);
 
-            _db.RegistrarVenda(total, custoTotal, recebido, troco, _pedidoAtual);
+            _vendaService.RegistrarVenda(
+                                            total,
+                                            custoTotal,
+                                            recebido,
+                                            troco,
+                                            _pedidoAtual);
 
             MessageBox.Show(this, $"Venda registrada: {Fmt(total)}\nTroco: {Fmt(troco)}",
                 "Venda finalizada", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -399,7 +407,12 @@ namespace CaixaFestejos
                 return;
             }
 
-            _db.AdicionarProduto(new Produto { Nome = nome, Preco = preco, Custo = custo });
+            _produtoService.AdicionarProduto(new Produto
+            {
+                Nome = nome,
+                Preco = preco,
+                Custo = custo
+            });
             _txtNome.Text = "";
             _numPreco.Value = 0;
             _numCusto.Value = 0;
@@ -416,7 +429,7 @@ namespace CaixaFestejos
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (resultado == DialogResult.Yes)
             {
-                _db.ExcluirProduto(produto.Id);
+                _produtoService.ExcluirProduto(produto.Id);
                 CarregarProdutos();
             }
         }
@@ -505,7 +518,7 @@ namespace CaixaFestejos
 
         private void AtualizarFechamento()
         {
-            var resumo = _db.ObterResumo();
+            var resumo = _relatorioService.ObterResumo();
             _lblTotalVendido.Text = Fmt(resumo.TotalVendido);
             _lblItensVendidos.Text = resumo.ItensVendidos.ToString();
             _lblRecebido.Text = Fmt(resumo.TotalRecebido);
@@ -514,7 +527,7 @@ namespace CaixaFestejos
             _lblMaisVendido.Text = resumo.MaisVendido;
 
             _gridRelatorio.Rows.Clear();
-            foreach (var item in _db.ObterVendasPorProduto())
+            foreach (var item in _relatorioService.ObterVendasPorProduto())
             {
                 _gridRelatorio.Rows.Add(item.Nome, item.Quantidade, Fmt(item.Total));
             }
@@ -529,7 +542,7 @@ namespace CaixaFestejos
             };
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                _db.ExportarCsv(dialog.FileName);
+                _relatorioService.ExportarCsv(dialog.FileName);
                 MessageBox.Show(this, "Relatório exportado com sucesso.", "Exportado",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -542,7 +555,7 @@ namespace CaixaFestejos
                 "Zerar vendas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (resultado == DialogResult.Yes)
             {
-                _db.ZerarVendas();
+                _vendaService.ZerarVendas();
                 AtualizarFechamento();
                 MessageBox.Show(this, "Vendas zeradas. Pronto para o próximo festejo.", "Concluído",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
