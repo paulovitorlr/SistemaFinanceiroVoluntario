@@ -560,14 +560,22 @@ namespace CaixaFestejos
         {
             using var dialog = new SaveFileDialog
             {
-                Filter = "Arquivo CSV (*.csv)|*.csv",
-                FileName = $"vendas-festejos-{DateTime.Now:yyyy-MM-dd}.csv"
+                Filter = "Planilha do Excel (*.xlsx)|*.xlsx",
+                DefaultExt = "xlsx",
+                AddExtension = true,
+                FileName = $"vendas-festejos-{DateTime.Now:yyyy-MM-dd}.xlsx"
             };
+
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 _exportacaoService.ExportarCsv(dialog.FileName);
-                MessageBox.Show(this, "Relatório exportado com sucesso.", "Exportado",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                MessageBox.Show(
+                    this,
+                    "Relatório exportado com sucesso.",
+                    "Exportado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
         }
 

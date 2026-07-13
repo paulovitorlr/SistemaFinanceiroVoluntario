@@ -1,4 +1,5 @@
 ﻿using CaixaFestejos.Data;
+using ClosedXML.Excel;
 
 namespace CaixaFestejos.Repositories;
 
@@ -14,7 +15,6 @@ public class ExportacaoRepository : IExportacaoRepository
     public void ExportarCsv(string caminho)
     {
         using var conn = _database.AbrirConexao();
-
         using var cmd = conn.CreateCommand();
 
         cmd.CommandText = @"
@@ -32,24 +32,57 @@ public class ExportacaoRepository : IExportacaoRepository
 
         using var reader = cmd.ExecuteReader();
 
-        using var writer = new StreamWriter(
-            caminho,
-            false,
-            System.Text.Encoding.UTF8);
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Vendas");
 
-        writer.WriteLine("data_hora;produto;quantidade;preco_unit;subtotal;venda_id");
+        // Cabeçalho
+        worksheet.Cell(1, 1).Value = "Data/Hora";
+        worksheet.Cell(1, 2).Value = "Produto";
+        worksheet.Cell(1, 3).Value = "Quantidade";
+        worksheet.Cell(1, 4).Value = "Preço Unitário";
+        worksheet.Cell(1, 5).Value = "Subtotal";
+        worksheet.Cell(1, 6).Value = "Venda";
+
+        var header = worksheet.Range(1, 1, 1, 6);
+
+        header.Style.Font.Bold = true;
+        header.Style.Font.FontColor = XLColor.White;
+        header.Style.Fill.BackgroundColor = XLColor.DarkBlue;
+        header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+        int linha = 2;
 
         while (reader.Read())
         {
-            string dataHora = reader.GetString(0);
-            string nome = reader.GetString(1);
-            long quantidade = reader.GetInt64(2);
-            double preco = reader.GetDouble(3);
-            double subtotal = reader.GetDouble(4);
-            long vendaId = reader.GetInt64(5);
+            var dataHora = DateTime.Parse(reader.GetString(0));
+            var nome = reader.GetString(1);
+            var quantidade = reader.GetInt64(2);
+            var preco = reader.GetDouble(3);
+            var subtotal = reader.GetDouble(4);
+            var vendaId = reader.GetInt64(5);
 
-            writer.WriteLine(
-                $"{dataHora};{nome};{quantidade};{preco:F2};{subtotal:F2};{vendaId}");
+            worksheet.Cell(linha, 1).Value = dataHora;
+            worksheet.Cell(linha, 2).Value = nome;
+            worksheet.Cell(linha, 3).Value = quantidade;
+            worksheet.Cell(linha, 4).Value = preco;
+            worksheet.Cell(linha, 5).Value = subtotal;
+            worksheet.Cell(linha, 6).Value = vendaId;
+
+            linha++;
         }
+
+        // Formatação
+        worksheet.Column(1).Style.DateFormat.Format = "dd/MM/yyyy HH:mm:ss";
+        worksheet.Column(4).Style.NumberFormat.Format = "R$ #,##0.00";
+        worksheet.Column(5).Style.NumberFormat.Format = "R$ #,##0.00";
+
+        // Tabela com filtros
+        worksheet.Range(1, 1, linha - 1, 6).CreateTable();
+
+        // Ajuste automático das colunas
+        worksheet.Columns().AdjustToContents();
+
+        // Salva como Excel
+        workbook.SaveAs(caminho);
     }
 }
