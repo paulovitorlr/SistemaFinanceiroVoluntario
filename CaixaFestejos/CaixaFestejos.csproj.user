@@ -1,7 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
+  <PropertyGroup>
+    <_LastSelectedProfileId>E:\github\SistemaFinanceiroVoluntario\CaixaFestejos\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
+  </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Forms\FechamentoTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Forms\ProdutosTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Forms\VenderTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

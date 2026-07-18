@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\forms\\vendertabpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:forms\\vendertabpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\forms\\produtostabpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:forms\\produtostabpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\forms\\fechamentotabpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:forms\\fechamentotabpage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\services\\exportacoesservices\\iexportacaoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:services\\exportacoesservices\\iexportacaoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\repositories\\exportacoesrepository\\exportacaorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:repositories\\exportacoesrepository\\exportacaorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\services\\exportacoesservices\\exportacaoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:services\\exportacoesservices\\exportacaoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|e:\\github\\sistemafinanceirovoluntario\\caixafestejos\\utils\\formatador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7AA7BAD-2720-9FD5-4CD0-BEBCA76700E6}|CaixaFestejos.csproj|solutionrelative:utils\\formatador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,58 +30,71 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ExportacaoRepository.cs",
-              "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Repositories\\ExportacoesRepository\\ExportacaoRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\ExportacoesRepository\\ExportacaoRepository.cs",
-              "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Repositories\\ExportacoesRepository\\ExportacaoRepository.cs",
-              "RelativeToolTip": "Repositories\\ExportacoesRepository\\ExportacaoRepository.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAmwA4AAAArAAAAAAAAAA==",
+              "Title": "FechamentoTabPage.cs",
+              "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Forms\\FechamentoTabPage.cs",
+              "RelativeDocumentMoniker": "Forms\\FechamentoTabPage.cs",
+              "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Forms\\FechamentoTabPage.cs",
+              "RelativeToolTip": "Forms\\FechamentoTabPage.cs",
+              "ViewState": "AgIAAIUAAAAAAAAAAAAmwKQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-13T14:21:13.051Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ExportacaoService.cs",
-              "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Services\\ExportacoesServices\\ExportacaoService.cs",
-              "RelativeDocumentMoniker": "Services\\ExportacoesServices\\ExportacaoService.cs",
-              "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Services\\ExportacoesServices\\ExportacaoService.cs",
-              "RelativeToolTip": "Services\\ExportacoesServices\\ExportacaoService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-11T18:07:24.3Z",
+              "WhenOpened": "2026-07-18T00:14:33.081Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "IExportacaoService.cs",
-              "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Services\\ExportacoesServices\\IExportacaoService.cs",
-              "RelativeDocumentMoniker": "Services\\ExportacoesServices\\IExportacaoService.cs",
-              "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Services\\ExportacoesServices\\IExportacaoService.cs",
-              "RelativeToolTip": "Services\\ExportacoesServices\\IExportacaoService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
+              "Title": "ProdutosTabPage.cs",
+              "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Forms\\ProdutosTabPage.cs",
+              "RelativeDocumentMoniker": "Forms\\ProdutosTabPage.cs",
+              "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Forms\\ProdutosTabPage.cs",
+              "RelativeToolTip": "Forms\\ProdutosTabPage.cs",
+              "ViewState": "AgIAAIsAAAAAAAAAAAAuwJwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-11T18:07:08.095Z",
+              "WhenOpened": "2026-07-18T00:14:06.204Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "VenderTabPage.cs",
+              "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Forms\\VenderTabPage.cs",
+              "RelativeDocumentMoniker": "Forms\\VenderTabPage.cs",
+              "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Forms\\VenderTabPage.cs",
+              "RelativeToolTip": "Forms\\VenderTabPage.cs",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAQwDEBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-18T00:13:34.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "MainForm.cs",
               "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\MainForm.cs",
               "RelativeDocumentMoniker": "MainForm.cs",
               "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\MainForm.cs",
               "RelativeToolTip": "MainForm.cs",
-              "ViewState": "AgIAAB4CAAAAAAAAAAAswC8CAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-11T17:06:41.829Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Formatador.cs",
+              "DocumentMoniker": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Utils\\Formatador.cs",
+              "RelativeDocumentMoniker": "Utils\\Formatador.cs",
+              "ToolTip": "E:\\github\\SistemaFinanceiroVoluntario\\CaixaFestejos\\Utils\\Formatador.cs",
+              "RelativeToolTip": "Utils\\Formatador.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-18T00:13:09.262Z",
               "EditorCaption": ""
             }
           ]
