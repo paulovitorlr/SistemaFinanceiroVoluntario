@@ -49,6 +49,11 @@ namespace CaixaFestejos.Services
             _vendaRepository.Registrar(venda);
         }
 
+        public ResumoPagamento ObterResumoPagamento()
+        {
+            return _vendaRepository.ObterResumoPagamento();
+        }
+
         public void ZerarVendas()
         {
             _vendaRepository.Zerar();

@@ -208,6 +208,40 @@ public class VendaRepository : IVendaRepository
         return vendas;
     }
 
+    public ResumoPagamento ObterResumoPagamento()
+    {
+        using var conn = _database.AbrirConexao();
+        using var cmd = conn.CreateCommand();
+
+        cmd.CommandText = @"
+        SELECT
+            COALESCE(SUM(Total), 0) AS TotalGeral,
+            COALESCE(SUM(CASE
+                WHEN FormaPagamento = 'Especie'
+                THEN Total
+                ELSE 0
+            END), 0) AS TotalEspecie,
+            COALESCE(SUM(CASE
+                WHEN FormaPagamento = 'Pix'
+                THEN Total
+                ELSE 0
+            END), 0) AS TotalPix
+        FROM Vendas;";
+
+        using var reader = cmd.ExecuteReader();
+
+        if (!reader.Read())
+        {
+            return new ResumoPagamento();
+        }
+
+        return new ResumoPagamento
+        {
+            TotalGeral = (decimal)reader.GetDouble(0),
+            TotalEspecie = (decimal)reader.GetDouble(1),
+            TotalPix = (decimal)reader.GetDouble(2)
+        };
+    }
     public void Excluir(int id)
     {
         using var conn = _database.AbrirConexao();

@@ -6,10 +6,14 @@ namespace CaixaFestejos.Repositories;
 public class ExportacaoRepository : IExportacaoRepository
 {
     private readonly Database _database;
+    private readonly IVendaRepository _vendaRepository;
 
-    public ExportacaoRepository(Database database)
+    public ExportacaoRepository(
+        Database database,
+        IVendaRepository vendaRepository)
     {
         _database = database;
+        _vendaRepository = vendaRepository;
     }
 
     public void ExportarCsv(string caminho)
@@ -47,6 +51,8 @@ public class ExportacaoRepository : IExportacaoRepository
 
         var header = worksheet.Range(1, 1, 1, 7);
 
+        
+
         header.Style.Font.Bold = true;
         header.Style.Font.FontColor = XLColor.White;
         header.Style.Fill.BackgroundColor = XLColor.DarkBlue;
@@ -82,6 +88,40 @@ public class ExportacaoRepository : IExportacaoRepository
 
         // Tabela com filtros
         worksheet.Range(1, 1, linha - 1, 7).CreateTable();
+        linha += 3;
+
+        var resumo = _vendaRepository.ObterResumoPagamento();
+
+        worksheet.Cell(linha, 1).Value = "RESUMO FINANCEIRO";
+        worksheet.Cell(linha, 1).Style.Font.Bold = true;
+        worksheet.Cell(linha, 1).Style.Font.FontSize = 14;
+
+        linha++;
+
+        worksheet.Cell(linha, 1).Value = "Total Geral";
+        worksheet.Cell(linha, 2).Value = resumo.TotalGeral;
+
+        linha++;
+
+        worksheet.Cell(linha, 1).Value = "Total em Espécie";
+        worksheet.Cell(linha, 2).Value = resumo.TotalEspecie;
+
+        linha++;
+
+        worksheet.Cell(linha, 1).Value = "Total em PIX";
+        worksheet.Cell(linha, 2).Value = resumo.TotalPix;
+
+        worksheet.Range(linha - 2, 2, linha, 2)
+         .Style.NumberFormat.Format = "R$ #,##0.00";
+
+        var resumoRange = worksheet.Range(linha - 3, 1, linha, 2);
+
+        resumoRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+        resumoRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+        worksheet.Cell(linha - 3, 1).Style.Fill.BackgroundColor = XLColor.DarkBlue;
+        worksheet.Cell(linha - 3, 1).Style.Font.FontColor = XLColor.White;
+        worksheet.Cell(linha - 3, 1).Style.Font.Bold = true;
 
         // Ajuste automático das colunas
         worksheet.Columns().AdjustToContents();

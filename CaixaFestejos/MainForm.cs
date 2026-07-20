@@ -30,17 +30,18 @@ namespace CaixaFestejos
             var initializer = new DatabaseInitializer(database);
             initializer.Inicializar();
 
-            _produtoService = new ProdutoService(
-                new ProdutoRepository(database));
+            var produtoRepository = new ProdutoRepository(database);
+            var vendaRepository = new VendaRepository(database);
+            var relatorioRepository = new RelatorioRepository(database);
+            var exportacaoRepository = new ExportacaoRepository(database, vendaRepository);
 
-            _vendaService = new VendaService(
-                new VendaRepository(database));
+            _produtoService = new ProdutoService(produtoRepository);
 
-            _relatorioService = new RelatorioService(
-                new RelatorioRepository(database));
+            _vendaService = new VendaService(vendaRepository);
 
-            _exportacaoService = new ExportacaoService(
-                new ExportacaoRepository(database));
+            _relatorioService = new RelatorioService(relatorioRepository);
+
+            _exportacaoService = new ExportacaoService(exportacaoRepository);
 
             Text = "Caixa dos Festejos";
             Width = 960;
