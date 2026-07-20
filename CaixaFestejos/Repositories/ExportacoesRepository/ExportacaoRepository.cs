@@ -18,17 +18,18 @@ public class ExportacaoRepository : IExportacaoRepository
         using var cmd = conn.CreateCommand();
 
         cmd.CommandText = @"
-            SELECT
-                v.DataHora,
-                iv.NomeProduto,
-                iv.Quantidade,
-                iv.PrecoUnit,
-                (iv.PrecoUnit * iv.Quantidade) AS Subtotal,
-                iv.VendaId
-            FROM ItensVenda iv
-            INNER JOIN Vendas v
-                ON v.Id = iv.VendaId
-            ORDER BY v.DataHora";
+                            SELECT
+                            v.DataHora,
+                            iv.NomeProduto,
+                            iv.Quantidade,
+                            iv.PrecoUnit,
+                            (iv.PrecoUnit * iv.Quantidade) AS Subtotal,
+                            iv.VendaId,
+                            v.FormaPagamento
+                            FROM ItensVenda iv
+                            INNER JOIN Vendas v
+                            ON v.Id = iv.VendaId
+                            ORDER BY v.DataHora";
 
         using var reader = cmd.ExecuteReader();
 
@@ -42,8 +43,9 @@ public class ExportacaoRepository : IExportacaoRepository
         worksheet.Cell(1, 4).Value = "Preço Unitário";
         worksheet.Cell(1, 5).Value = "Subtotal";
         worksheet.Cell(1, 6).Value = "Venda";
+        worksheet.Cell(1, 7).Value = "Forma de Pagamento";
 
-        var header = worksheet.Range(1, 1, 1, 6);
+        var header = worksheet.Range(1, 1, 1, 7);
 
         header.Style.Font.Bold = true;
         header.Style.Font.FontColor = XLColor.White;
@@ -60,6 +62,7 @@ public class ExportacaoRepository : IExportacaoRepository
             var preco = reader.GetDouble(3);
             var subtotal = reader.GetDouble(4);
             var vendaId = reader.GetInt64(5);
+            var formaPagamento = reader.GetString(6);
 
             worksheet.Cell(linha, 1).Value = dataHora;
             worksheet.Cell(linha, 2).Value = nome;
@@ -67,6 +70,7 @@ public class ExportacaoRepository : IExportacaoRepository
             worksheet.Cell(linha, 4).Value = preco;
             worksheet.Cell(linha, 5).Value = subtotal;
             worksheet.Cell(linha, 6).Value = vendaId;
+            worksheet.Cell(linha, 7).Value = formaPagamento;
 
             linha++;
         }
@@ -77,7 +81,7 @@ public class ExportacaoRepository : IExportacaoRepository
         worksheet.Column(5).Style.NumberFormat.Format = "R$ #,##0.00";
 
         // Tabela com filtros
-        worksheet.Range(1, 1, linha - 1, 6).CreateTable();
+        worksheet.Range(1, 1, linha - 1, 7).CreateTable();
 
         // Ajuste automático das colunas
         worksheet.Columns().AdjustToContents();

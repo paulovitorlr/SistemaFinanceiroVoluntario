@@ -30,7 +30,8 @@ namespace CaixaFestejos.Data
                     Total REAL NOT NULL,
                     CustoTotal REAL NOT NULL,
                     Recebido REAL NOT NULL,
-                    Troco REAL NOT NULL
+                    Troco REAL NOT NULL,
+                    FormaPagamento TEXT NOT NULL DEFAULT 'Especie'
                 );
 
                 CREATE TABLE IF NOT EXISTS ItensVenda (
@@ -46,6 +47,22 @@ namespace CaixaFestejos.Data
             ";
 
             cmd.ExecuteNonQuery();
+
+            using var cmdMigracao = conn.CreateCommand();
+
+            cmdMigracao.CommandText = @"
+                                        ALTER TABLE Vendas
+                                        ADD COLUMN FormaPagamento TEXT NOT NULL DEFAULT 'Especie';
+                                       ";
+
+            try
+            {
+                cmdMigracao.ExecuteNonQuery();
+            }
+            catch
+            {
+                // A coluna já existe.
+            }
         }
     }
 }

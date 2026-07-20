@@ -25,6 +25,7 @@ namespace CaixaFestejos.Forms
         private DataGridView _gridPedido = null!;
         private Label _lblTotalPedido = null!;
         private NumericUpDown _numRecebido = null!;
+        private ComboBox _cmbFormaPagamento = null!;
         private Label _lblTroco = null!;
         private Button _btnFinalizar = null!;
 
@@ -57,23 +58,40 @@ namespace CaixaFestejos.Forms
                 RowCount = 3,
                 Padding = new Padding(10)
             };
+
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 45));
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 35));
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 20));
 
             // Cardápio
-            var grpCardapio = new GroupBox { Text = "Cardápio", Dock = DockStyle.Fill };
+            var grpCardapio = new GroupBox
+            {
+                Text = "Cardápio",
+                Dock = DockStyle.Fill
+            };
+
             _painelProdutos = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 AutoScroll = true,
                 Padding = new Padding(8)
             };
+
             grpCardapio.Controls.Add(_painelProdutos);
 
-            // Pedido atual
-            var grpPedido = new GroupBox { Text = "Pedido atual", Dock = DockStyle.Fill };
-            var painelPedido = new TableLayoutPanel { Dock = DockStyle.Fill, RowCount = 2 };
+            // Pedido
+            var grpPedido = new GroupBox
+            {
+                Text = "Pedido atual",
+                Dock = DockStyle.Fill
+            };
+
+            var painelPedido = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                RowCount = 2
+            };
+
             painelPedido.RowStyles.Add(new RowStyle(SizeType.Percent, 80));
             painelPedido.RowStyles.Add(new RowStyle(SizeType.Percent, 20));
 
@@ -87,16 +105,36 @@ namespace CaixaFestejos.Forms
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
+
             _gridPedido.Columns.Add("Produto", "Produto");
             _gridPedido.Columns.Add("Qtd", "Quantidade");
             _gridPedido.Columns.Add("Subtotal", "Subtotal");
-            var colMenos = new DataGridViewButtonColumn { Name = "Menos", HeaderText = "", Text = "-1", UseColumnTextForButtonValue = true, Width = 40 };
-            var colMais = new DataGridViewButtonColumn { Name = "Mais", HeaderText = "", Text = "+1", UseColumnTextForButtonValue = true, Width = 40 };
+
+            var colMenos = new DataGridViewButtonColumn
+            {
+                Name = "Menos",
+                HeaderText = "",
+                Text = "-1",
+                UseColumnTextForButtonValue = true,
+                Width = 40
+            };
+
+            var colMais = new DataGridViewButtonColumn
+            {
+                Name = "Mais",
+                HeaderText = "",
+                Text = "+1",
+                UseColumnTextForButtonValue = true,
+                Width = 40
+            };
+
             _gridPedido.Columns.Add(colMenos);
             _gridPedido.Columns.Add(colMais);
+
             _gridPedido.Columns["Produto"]!.ReadOnly = true;
             _gridPedido.Columns["Qtd"]!.ReadOnly = true;
             _gridPedido.Columns["Subtotal"]!.ReadOnly = true;
+
             _gridPedido.CellContentClick += GridPedido_CellContentClick;
 
             _lblTotalPedido = new Label
@@ -109,17 +147,38 @@ namespace CaixaFestejos.Forms
 
             painelPedido.Controls.Add(_gridPedido, 0, 0);
             painelPedido.Controls.Add(_lblTotalPedido, 0, 1);
+
             grpPedido.Controls.Add(painelPedido);
 
             // Pagamento
-            var grpPagamento = new GroupBox { Text = "Pagamento", Dock = DockStyle.Fill };
-            var painelPagamento = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 1, Padding = new Padding(8) };
+            var grpPagamento = new GroupBox
+            {
+                Text = "Pagamento",
+                Dock = DockStyle.Fill
+            };
+
+            var painelPagamento = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 5,
+                RowCount = 1,
+                Padding = new Padding(8)
+            };
+
             painelPagamento.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             painelPagamento.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
+            painelPagamento.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140));
             painelPagamento.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             painelPagamento.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160));
 
-            var lblRecebido = new Label { Text = "Valor recebido (R$):", Anchor = AnchorStyles.Left, AutoSize = true, Margin = new Padding(0, 12, 8, 0) };
+            var lblRecebido = new Label
+            {
+                Text = "Valor recebido (R$):",
+                Anchor = AnchorStyles.Left,
+                AutoSize = true,
+                Margin = new Padding(0, 12, 8, 0)
+            };
+
             _numRecebido = new NumericUpDown
             {
                 DecimalPlaces = 2,
@@ -130,7 +189,19 @@ namespace CaixaFestejos.Forms
                 Anchor = AnchorStyles.Left,
                 Margin = new Padding(0, 8, 0, 0)
             };
+
             _numRecebido.ValueChanged += (s, e) => AtualizarTroco();
+
+            _cmbFormaPagamento = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Width = 120,
+                Anchor = AnchorStyles.Left
+            };
+
+            _cmbFormaPagamento.Items.Add(FormaPagamento.Especie);
+            _cmbFormaPagamento.Items.Add(FormaPagamento.Pix);
+            _cmbFormaPagamento.SelectedIndex = 0;
 
             _lblTroco = new Label
             {
@@ -151,23 +222,28 @@ namespace CaixaFestejos.Forms
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat
             };
+
             _btnFinalizar.Click += BtnFinalizar_Click;
 
             painelPagamento.Controls.Add(lblRecebido, 0, 0);
             painelPagamento.Controls.Add(_numRecebido, 1, 0);
-            painelPagamento.Controls.Add(_lblTroco, 2, 0);
-            painelPagamento.Controls.Add(_btnFinalizar, 3, 0);
+            painelPagamento.Controls.Add(_cmbFormaPagamento, 2, 0);
+            painelPagamento.Controls.Add(_lblTroco, 3, 0);
+            painelPagamento.Controls.Add(_btnFinalizar, 4, 0);
+
             grpPagamento.Controls.Add(painelPagamento);
 
             layout.Controls.Add(grpCardapio, 0, 0);
             layout.Controls.Add(grpPedido, 0, 1);
             layout.Controls.Add(grpPagamento, 0, 2);
-            Controls.Add(layout);
-        }
 
+            Controls.Add(layout);
+
+        }
         private void RenderCardapio()
         {
             _painelProdutos.Controls.Clear();
+
             if (_produtos.Count == 0)
             {
                 _painelProdutos.Controls.Add(new Label
@@ -176,6 +252,7 @@ namespace CaixaFestejos.Forms
                     AutoSize = true,
                     ForeColor = Color.Gray
                 });
+
                 return;
             }
 
@@ -191,7 +268,9 @@ namespace CaixaFestejos.Forms
                     FlatStyle = FlatStyle.Flat,
                     BackColor = Color.FromArgb(255, 253, 247)
                 };
+
                 btn.Click += (s, e) => AdicionarAoPedido(produto.Id);
+
                 _painelProdutos.Controls.Add(btn);
             }
         }
@@ -199,6 +278,7 @@ namespace CaixaFestejos.Forms
         private void AdicionarAoPedido(int produtoId)
         {
             var item = _pedidoAtual.FirstOrDefault(i => i.ProdutoId == produtoId);
+
             if (item != null)
             {
                 item.Quantidade++;
@@ -206,7 +286,10 @@ namespace CaixaFestejos.Forms
             else
             {
                 var produto = _produtos.FirstOrDefault(p => p.Id == produtoId);
-                if (produto == null) return;
+
+                if (produto == null)
+                    return;
+
                 _pedidoAtual.Add(new ItemPedido
                 {
                     ProdutoId = produto.Id,
@@ -216,35 +299,56 @@ namespace CaixaFestejos.Forms
                     Quantidade = 1
                 });
             }
+
             RenderPedido();
         }
 
         private void GridPedido_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            if (e.RowIndex < 0)
+                return;
+
             var colName = _gridPedido.Columns[e.ColumnIndex].Name;
-            if (colName != "Menos" && colName != "Mais") return;
+
+            if (colName != "Menos" && colName != "Mais")
+                return;
 
             var item = _pedidoAtual[e.RowIndex];
-            if (colName == "Mais") item.Quantidade++;
-            else item.Quantidade--;
 
-            if (item.Quantidade <= 0) _pedidoAtual.RemoveAt(e.RowIndex);
+            if (colName == "Mais")
+                item.Quantidade++;
+            else
+                item.Quantidade--;
+
+            if (item.Quantidade <= 0)
+                _pedidoAtual.RemoveAt(e.RowIndex);
+
             RenderPedido();
         }
 
         private void RenderPedido()
         {
             _gridPedido.Rows.Clear();
+
             foreach (var item in _pedidoAtual)
             {
-                _gridPedido.Rows.Add(item.Nome, item.Quantidade, Formatador.Moeda(item.Subtotal), "-1", "+1");
+                _gridPedido.Rows.Add(
+                    item.Nome,
+                    item.Quantidade,
+                    Formatador.Moeda(item.Subtotal),
+                    "-1",
+                    "+1");
             }
+
             _lblTotalPedido.Text = "Total: " + Formatador.Moeda(TotalPedido());
+
             AtualizarTroco();
         }
 
-        private decimal TotalPedido() => _pedidoAtual.Sum(i => i.Subtotal);
+        private decimal TotalPedido()
+        {
+            return _pedidoAtual.Sum(i => i.Subtotal);
+        }
 
         private void AtualizarTroco()
         {
@@ -259,6 +363,7 @@ namespace CaixaFestejos.Forms
             }
 
             decimal troco = recebido - total;
+
             if (troco < 0)
             {
                 _lblTroco.ForeColor = Color.FromArgb(178, 58, 52);
@@ -279,7 +384,7 @@ namespace CaixaFestejos.Forms
             {
                 _vendaService.RegistrarVenda(
                     _pedidoAtual,
-                    _numRecebido.Value);
+                    _numRecebido.Value, (FormaPagamento)_cmbFormaPagamento.SelectedItem!);
 
                 MessageBox.Show(
                     FindForm(),
@@ -289,7 +394,10 @@ namespace CaixaFestejos.Forms
                     MessageBoxIcon.Information);
 
                 _pedidoAtual.Clear();
+
                 _numRecebido.Value = 0;
+                _cmbFormaPagamento.SelectedIndex = 0;
+
                 RenderPedido();
             }
             catch (Exception ex)

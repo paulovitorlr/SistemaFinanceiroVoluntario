@@ -13,7 +13,7 @@ namespace CaixaFestejos.Services
             _vendaRepository = vendaRepository;
         }
 
-        public void RegistrarVenda(List<ItemPedido> itens, decimal recebido)
+        public void RegistrarVenda(List<ItemPedido> itens, decimal recebido, FormaPagamento formaPagamento)
         {
             if (itens == null || itens.Count == 0)
                 throw new InvalidOperationException("A venda deve possuir pelo menos um item.");
@@ -34,6 +34,7 @@ namespace CaixaFestejos.Services
                 CustoTotal = custoTotal,
                 Recebido = recebido,
                 Troco = troco,
+                FormaPagamento = formaPagamento,
 
                 Itens = itens.Select(i => new ItemVenda
                 {
