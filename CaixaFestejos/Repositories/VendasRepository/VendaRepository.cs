@@ -235,7 +235,7 @@ VALUES
                 WHEN FormaPagamento = 'Pix'
                 THEN Total
                 ELSE 0
-            END), 0) AS TotalPix,
+            END), 0) AS TotalPix
 
             FROM Vendas;";
 

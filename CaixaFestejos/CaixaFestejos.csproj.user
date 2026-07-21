@@ -7,8 +7,14 @@
     <Compile Update="Forms\FechamentoTabPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Forms\FiadosTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Forms\ProdutosTabPage.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Forms\ReceberFiadoDialog.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\VenderTabPage.cs">
       <SubType>Component</SubType>

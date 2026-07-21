@@ -7,13 +7,16 @@ public class ExportacaoRepository : IExportacaoRepository
 {
     private readonly Database _database;
     private readonly IVendaRepository _vendaRepository;
+    private readonly IFiadoRepository _fiadoRepository;
 
     public ExportacaoRepository(
         Database database,
-        IVendaRepository vendaRepository)
+        IVendaRepository vendaRepository,
+        IFiadoRepository fiadoRepository)
     {
         _database = database;
         _vendaRepository = vendaRepository;
+        _fiadoRepository = fiadoRepository;
     }
 
     public void ExportarCsv(string caminho)
@@ -91,6 +94,10 @@ public class ExportacaoRepository : IExportacaoRepository
         linha += 3;
 
         var resumo = _vendaRepository.ObterResumoPagamento();
+
+        // Fiado é dívida pendente, não dinheiro recebido no caixa — por isso o total
+        // vem do FiadoRepository (fiados ainda em aberto), separado do resumo de Vendas.
+        resumo.TotalFiado = _fiadoRepository.ListarPendentes().Sum(f => f.ValorTotal);
 
         worksheet.Cell(linha, 1).Value = "RESUMO FINANCEIRO";
         worksheet.Cell(linha, 1).Style.Font.Bold = true;

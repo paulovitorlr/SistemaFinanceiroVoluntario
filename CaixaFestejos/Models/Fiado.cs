@@ -14,5 +14,8 @@ public class Fiado
 
     public DateTime? DataPagamento { get; set; }
 
+    /// <summary>Forma de pagamento usada na quitação (nula enquanto o fiado está em aberto).</summary>
+    public FormaPagamento? FormaPagamentoRecebimento { get; set; }
+
     public List<ItemFiado> Itens { get; set; } = new();
 }

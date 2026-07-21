@@ -23,6 +23,7 @@ namespace CaixaFestejos
 
         private VenderTabPage _abaVender = null!;
         private ProdutosTabPage _abaProdutos = null!;
+        private FiadosTabPage _abaFiados = null!;
         private FechamentoTabPage _abaFechamento = null!;
 
         public MainForm()
@@ -36,7 +37,7 @@ namespace CaixaFestejos
             var vendaRepository = new VendaRepository(database);
             var fiadoRepository = new FiadoRepository(database);
             var relatorioRepository = new RelatorioRepository(database);
-            var exportacaoRepository = new ExportacaoRepository(database, vendaRepository);
+            var exportacaoRepository = new ExportacaoRepository(database, vendaRepository, fiadoRepository);
 
             _produtoService = new ProdutoService(produtoRepository);
 
@@ -61,6 +62,7 @@ namespace CaixaFestejos
         {
             _abaVender = new VenderTabPage(_produtoService, _vendaService, _fiadoService);
             _abaProdutos = new ProdutosTabPage(_produtoService);
+            _abaFiados = new FiadosTabPage(_fiadoService);
             _abaFechamento = new FechamentoTabPage(_relatorioService, _vendaService, _exportacaoService);
 
             // Quando o catálogo muda na aba Produtos, o cardápio da aba Vender precisa refletir isso.
@@ -69,11 +71,15 @@ namespace CaixaFestejos
             var tabs = new TabControl { Dock = DockStyle.Fill };
             tabs.TabPages.Add(_abaVender);
             tabs.TabPages.Add(_abaProdutos);
+            tabs.TabPages.Add(_abaFiados);
             tabs.TabPages.Add(_abaFechamento);
 
-            // Ao entrar na aba Fechamento, o resumo é recalculado.
+            // Ao entrar na aba Fiados ou Fechamento, os dados são recarregados.
             tabs.SelectedIndexChanged += (s, e) =>
             {
+                if (tabs.SelectedTab == _abaFiados)
+                    _abaFiados.CarregarFiados();
+
                 if (tabs.SelectedTab == _abaFechamento)
                     _abaFechamento.Atualizar();
             };
