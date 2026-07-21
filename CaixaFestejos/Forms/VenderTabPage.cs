@@ -18,9 +18,9 @@ namespace CaixaFestejos.Forms
         private readonly IProdutoService _produtoService;
         private readonly IVendaService _vendaService;
         private readonly IFiadoService _fiadoService;
+        private readonly IPedidoService _pedidoService;
 
         private List<Produto> _produtos = new();
-        private readonly List<ItemPedido> _pedidoAtual = new();
 
         private FlowLayoutPanel _painelProdutos = null!;
         private DataGridView _gridPedido = null!;
@@ -38,12 +38,13 @@ namespace CaixaFestejos.Forms
             20
         };
 
-        public VenderTabPage(IProdutoService produtoService, IVendaService vendaService, IFiadoService fiadoService)
+        public VenderTabPage(IProdutoService produtoService, IVendaService vendaService, IFiadoService fiadoService, IPedidoService pedidoService)
             : base("Vender")
         {
             _produtoService = produtoService;
             _vendaService = vendaService;
             _fiadoService = fiadoService;
+            _pedidoService = pedidoService;
 
             ConstruirLayout();
             AtualizarCardapio();
@@ -157,8 +158,28 @@ namespace CaixaFestejos.Forms
                 Width = 40
             };
 
+            var colEditar = new DataGridViewButtonColumn
+            {
+                Name = "Editar",
+                HeaderText = "",
+                Text = "Editar qtd.",
+                UseColumnTextForButtonValue = true,
+                Width = 80
+            };
+
+            var colRemover = new DataGridViewButtonColumn
+            {
+                Name = "Remover",
+                HeaderText = "",
+                Text = "Remover",
+                UseColumnTextForButtonValue = true,
+                Width = 70
+            };
+
             _gridPedido.Columns.Add(colMenos);
             _gridPedido.Columns.Add(colMais);
+            _gridPedido.Columns.Add(colEditar);
+            _gridPedido.Columns.Add(colRemover);
 
             _gridPedido.Columns["Produto"]!.ReadOnly = true;
             _gridPedido.Columns["Qtd"]!.ReadOnly = true;
@@ -329,28 +350,12 @@ namespace CaixaFestejos.Forms
 
         private void AdicionarAoPedido(int produtoId)
         {
-            var item = _pedidoAtual.FirstOrDefault(i => i.ProdutoId == produtoId);
+            var produto = _produtos.FirstOrDefault(p => p.Id == produtoId);
 
-            if (item != null)
-            {
-                item.Quantidade++;
-            }
-            else
-            {
-                var produto = _produtos.FirstOrDefault(p => p.Id == produtoId);
+            if (produto == null)
+                return;
 
-                if (produto == null)
-                    return;
-
-                _pedidoAtual.Add(new ItemPedido
-                {
-                    ProdutoId = produto.Id,
-                    Nome = produto.Nome,
-                    Preco = produto.Preco,
-                    Custo = produto.Custo,
-                    Quantidade = 1
-                });
-            }
+            _pedidoService.AdicionarItem(produto);
 
             RenderPedido();
         }
@@ -362,34 +367,95 @@ namespace CaixaFestejos.Forms
 
             var colName = _gridPedido.Columns[e.ColumnIndex].Name;
 
-            if (colName != "Menos" && colName != "Mais")
+            if (colName != "Menos" && colName != "Mais" && colName != "Editar" && colName != "Remover")
                 return;
 
-            var item = _pedidoAtual[e.RowIndex];
+            var item = _pedidoService.Itens[e.RowIndex];
 
-            if (colName == "Mais")
-                item.Quantidade++;
-            else
-                item.Quantidade--;
+            try
+            {
+                switch (colName)
+                {
+                    case "Mais":
+                        _pedidoService.AlterarQuantidadeItem(item.ProdutoId, item.Quantidade + 1);
+                        break;
 
-            if (item.Quantidade <= 0)
-                _pedidoAtual.RemoveAt(e.RowIndex);
+                    case "Menos":
+                        _pedidoService.AlterarQuantidadeItem(item.ProdutoId, item.Quantidade - 1);
+                        break;
+
+                    case "Editar":
+                        EditarQuantidadeItem(item);
+                        break;
+
+                    case "Remover":
+                        var confirmar = MessageBox.Show(
+                            FindForm(),
+                            $"Remover \"{item.Nome}\" do pedido?",
+                            "Remover item",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question);
+
+                        if (confirmar == DialogResult.Yes)
+                            _pedidoService.RemoverItemPedido(item.ProdutoId);
+                        break;
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(
+                    FindForm(),
+                    ex.Message,
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
 
             RenderPedido();
+        }
+
+        /// <summary>
+        /// Pede ao usuário a nova quantidade do item (via caixa de diálogo) e delega
+        /// a alteração ao PedidoService. Informar 0 (ou menos) remove o item do pedido.
+        /// </summary>
+        private void EditarQuantidadeItem(ItemPedido item)
+        {
+            var entrada = Microsoft.VisualBasic.Interaction.InputBox(
+                $"Nova quantidade para \"{item.Nome}\":",
+                "Editar quantidade",
+                item.Quantidade.ToString());
+
+            if (string.IsNullOrWhiteSpace(entrada))
+                return;
+
+            if (!int.TryParse(entrada, out var novaQuantidade))
+            {
+                MessageBox.Show(
+                    FindForm(),
+                    "Informe um número inteiro válido.",
+                    "Atenção",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            _pedidoService.AlterarQuantidadeItem(item.ProdutoId, novaQuantidade);
         }
 
         private void RenderPedido()
         {
             _gridPedido.Rows.Clear();
 
-            foreach (var item in _pedidoAtual)
+            foreach (var item in _pedidoService.Itens)
             {
                 _gridPedido.Rows.Add(
                     item.Nome,
                     item.Quantidade,
                     Formatador.Moeda(item.Subtotal),
                     "-1",
-                    "+1");
+                    "+1",
+                    "Editar qtd.",
+                    "Remover");
             }
 
             _lblTotalPedido.Text = "Total: " + Formatador.Moeda(TotalPedido());
@@ -399,7 +465,7 @@ namespace CaixaFestejos.Forms
 
         private decimal TotalPedido()
         {
-            return _pedidoAtual.Sum(i => i.Subtotal);
+            return _pedidoService.RecalcularPedido();
         }
 
         private void AtualizarTroco()
@@ -407,7 +473,7 @@ namespace CaixaFestejos.Forms
             decimal total = TotalPedido();
             decimal recebido = _numRecebido.Value;
 
-            if (_pedidoAtual.Count == 0)
+            if (_pedidoService.Itens.Count == 0)
             {
                 _lblTroco.Text = "";
                 _btnFinalizar.Enabled = false;
@@ -466,9 +532,7 @@ namespace CaixaFestejos.Forms
                         return;
                     }
 
-                    MessageBox.Show((_fiadoService == null).ToString());
-
-                    _fiadoService.RegistrarFiado(cliente, _pedidoAtual);
+                    _fiadoService.RegistrarFiado(cliente, _pedidoService.Itens.ToList());
 
                     MessageBox.Show(
                         FindForm(),
@@ -480,7 +544,7 @@ namespace CaixaFestejos.Forms
                 else
                 {
                     _vendaService.RegistrarVenda(
-                        _pedidoAtual,
+                        _pedidoService.Itens.ToList(),
                         _numRecebido.Value,
                         formaPagamento);
 
@@ -492,7 +556,7 @@ namespace CaixaFestejos.Forms
                         MessageBoxIcon.Information);
                 }
 
-                _pedidoAtual.Clear();
+                _pedidoService.LimparPedido();
 
                 _numRecebido.Value = 0;
                 _cmbFormaPagamento.SelectedIndex = 0;

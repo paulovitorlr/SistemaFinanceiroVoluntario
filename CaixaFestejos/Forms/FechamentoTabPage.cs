@@ -1,4 +1,5 @@
-﻿using CaixaFestejos.Services;
+﻿using CaixaFestejos.Models;
+using CaixaFestejos.Services;
 using CaixaFestejos.Utils;
 using System;
 using System.Drawing;
@@ -14,6 +15,7 @@ namespace CaixaFestejos.Forms
         private readonly IRelatorioService _relatorioService;
         private readonly IVendaService _vendaService;
         private readonly IExportacaoService _exportacaoService;
+        private readonly IProdutoService _produtoService;
 
         private Label _lblTotalVendido = null!;
         private Label _lblItensVendidos = null!;
@@ -22,16 +24,19 @@ namespace CaixaFestejos.Forms
         private Label _lblLucro = null!;
         private Label _lblMaisVendido = null!;
         private DataGridView _gridRelatorio = null!;
+        private DataGridView _gridVendas = null!;
 
         public FechamentoTabPage(
             IRelatorioService relatorioService,
             IVendaService vendaService,
-            IExportacaoService exportacaoService)
+            IExportacaoService exportacaoService,
+            IProdutoService produtoService)
             : base("Fechamento")
         {
             _relatorioService = relatorioService;
             _vendaService = vendaService;
             _exportacaoService = exportacaoService;
+            _produtoService = produtoService;
 
             ConstruirLayout();
         }
@@ -77,6 +82,43 @@ namespace CaixaFestejos.Forms
             _gridRelatorio.Columns.Add("Total", "Total");
             grpTabela.Controls.Add(_gridRelatorio);
 
+            var grpVendas = new GroupBox { Text = "Vendas registradas (corrigir venda já finalizada)", Dock = DockStyle.Fill };
+            _gridVendas = new DataGridView
+            {
+                Dock = DockStyle.Fill,
+                AllowUserToAddRows = false,
+                ReadOnly = false,
+                RowHeadersVisible = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            };
+            _gridVendas.Columns.Add("Id", "#");
+            _gridVendas.Columns.Add("Data", "Data/Hora");
+            _gridVendas.Columns.Add("Total", "Total");
+            _gridVendas.Columns.Add("FormaPagamento", "Pagamento");
+            _gridVendas.Columns["Id"]!.ReadOnly = true;
+            _gridVendas.Columns["Data"]!.ReadOnly = true;
+            _gridVendas.Columns["Total"]!.ReadOnly = true;
+            _gridVendas.Columns["FormaPagamento"]!.ReadOnly = true;
+
+            var colEditarVenda = new DataGridViewButtonColumn
+            {
+                Name = "Editar",
+                HeaderText = "",
+                Text = "Editar itens",
+                UseColumnTextForButtonValue = true,
+                Width = 90
+            };
+            _gridVendas.Columns.Add(colEditarVenda);
+            _gridVendas.CellContentClick += GridVendas_CellContentClick;
+            grpVendas.Controls.Add(_gridVendas);
+
+            var painelTabelas = new TableLayoutPanel { Dock = DockStyle.Fill, RowCount = 2, ColumnCount = 1 };
+            painelTabelas.RowStyles.Add(new RowStyle(SizeType.Percent, 45));
+            painelTabelas.RowStyles.Add(new RowStyle(SizeType.Percent, 55));
+            painelTabelas.Controls.Add(grpTabela, 0, 0);
+            painelTabelas.Controls.Add(grpVendas, 0, 1);
+
             var painelBotoes = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.LeftToRight, AutoSize = true };
             var btnAtualizar = new Button { Text = "Atualizar", Width = 110, Height = 34 };
             var btnExportar = new Button { Text = "Exportar CSV", Width = 130, Height = 34 };
@@ -89,9 +131,34 @@ namespace CaixaFestejos.Forms
             painelBotoes.Controls.Add(btnZerar);
 
             layout.Controls.Add(grpMetricas, 0, 0);
-            layout.Controls.Add(grpTabela, 0, 1);
+            layout.Controls.Add(painelTabelas, 0, 1);
             layout.Controls.Add(painelBotoes, 0, 2);
             Controls.Add(layout);
+        }
+
+        private void GridVendas_CellContentClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            if (_gridVendas.Columns[e.ColumnIndex].Name != "Editar")
+                return;
+
+            var vendaId = (int)_gridVendas.Rows[e.RowIndex].Cells["Id"].Value!;
+            var venda = _vendaService.ObterVenda(vendaId);
+
+            if (venda == null)
+            {
+                MessageBox.Show(FindForm(), "Venda não encontrada (pode já ter sido excluída ou zerada).",
+                    "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Atualizar();
+                return;
+            }
+
+            using var dialog = new EditarVendaDialog(_vendaService, _produtoService, new PedidoService(), venda);
+
+            if (dialog.ShowDialog(FindForm()) == DialogResult.OK)
+                Atualizar();
         }
 
         private (Label valor, Panel painel) CriarMetrica(string titulo)
@@ -122,6 +189,17 @@ namespace CaixaFestejos.Forms
             foreach (var item in _relatorioService.ObterVendasPorProduto())
             {
                 _gridRelatorio.Rows.Add(item.Nome, item.Quantidade, Formatador.Moeda(item.Total));
+            }
+
+            _gridVendas.Rows.Clear();
+            foreach (var venda in _vendaService.ListarVendas())
+            {
+                _gridVendas.Rows.Add(
+                    venda.Id,
+                    venda.DataHora.ToString("dd/MM/yyyy HH:mm"),
+                    Formatador.Moeda(venda.Total),
+                    venda.FormaPagamento.ToString(),
+                    "Editar itens");
             }
         }
 

@@ -102,6 +102,85 @@ VALUES
 
         transaction.Commit();
     }
+
+    public void Atualizar(Venda venda)
+    {
+        using var conn = _database.AbrirConexao();
+        using var transaction = conn.BeginTransaction();
+
+        using (var cmdVenda = conn.CreateCommand())
+        {
+            cmdVenda.Transaction = transaction;
+
+            cmdVenda.CommandText = @"
+            UPDATE Vendas SET
+                Total = $total,
+                CustoTotal = $custoTotal,
+                Recebido = $recebido,
+                Troco = $troco,
+                FormaPagamento = $formaPagamento
+            WHERE Id = $id";
+
+            cmdVenda.Parameters.AddWithValue("$total", (double)venda.Total);
+            cmdVenda.Parameters.AddWithValue("$custoTotal", (double)venda.CustoTotal);
+            cmdVenda.Parameters.AddWithValue("$recebido", (double)venda.Recebido);
+            cmdVenda.Parameters.AddWithValue("$troco", (double)venda.Troco);
+            cmdVenda.Parameters.AddWithValue("$formaPagamento", venda.FormaPagamento.ToString());
+            cmdVenda.Parameters.AddWithValue("$id", venda.Id);
+
+            var linhasAfetadas = cmdVenda.ExecuteNonQuery();
+
+            if (linhasAfetadas == 0)
+                throw new InvalidOperationException("Venda não encontrada.");
+        }
+
+        using (var cmdDeletaItens = conn.CreateCommand())
+        {
+            cmdDeletaItens.Transaction = transaction;
+            cmdDeletaItens.CommandText = "DELETE FROM ItensVenda WHERE VendaId = $vendaId";
+            cmdDeletaItens.Parameters.AddWithValue("$vendaId", venda.Id);
+            cmdDeletaItens.ExecuteNonQuery();
+        }
+
+        foreach (var item in venda.Itens)
+        {
+            using var cmdItem = conn.CreateCommand();
+
+            cmdItem.Transaction = transaction;
+
+            cmdItem.CommandText = @"
+            INSERT INTO ItensVenda
+            (
+                VendaId,
+                ProdutoId,
+                NomeProduto,
+                PrecoUnit,
+                CustoUnit,
+                Quantidade
+            )
+            VALUES
+            (
+                $vendaId,
+                $produtoId,
+                $nome,
+                $preco,
+                $custo,
+                $quantidade
+            )";
+
+            cmdItem.Parameters.AddWithValue("$vendaId", venda.Id);
+            cmdItem.Parameters.AddWithValue("$produtoId", item.ProdutoId);
+            cmdItem.Parameters.AddWithValue("$nome", item.Nome);
+            cmdItem.Parameters.AddWithValue("$preco", (double)item.Preco);
+            cmdItem.Parameters.AddWithValue("$custo", (double)item.Custo);
+            cmdItem.Parameters.AddWithValue("$quantidade", item.Quantidade);
+
+            cmdItem.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
     public Venda? BuscarPorId(int id)
     {
         using var conn = _database.AbrirConexao();

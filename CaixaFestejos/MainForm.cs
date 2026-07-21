@@ -19,6 +19,7 @@ namespace CaixaFestejos
         private readonly IRelatorioService _relatorioService;
         private readonly IExportacaoService _exportacaoService;
         private readonly IFiadoService _fiadoService;
+        private readonly IPedidoService _pedidoService;
 
 
         private VenderTabPage _abaVender = null!;
@@ -49,6 +50,8 @@ namespace CaixaFestejos
 
             _exportacaoService = new ExportacaoService(exportacaoRepository);
 
+            _pedidoService = new PedidoService();
+
             Text = "Caixa dos Festejos";
             Width = 960;
             Height = 700;
@@ -60,10 +63,10 @@ namespace CaixaFestejos
 
         private TabControl CriarTabs()
         {
-            _abaVender = new VenderTabPage(_produtoService, _vendaService, _fiadoService);
+            _abaVender = new VenderTabPage(_produtoService, _vendaService, _fiadoService, _pedidoService);
             _abaProdutos = new ProdutosTabPage(_produtoService);
             _abaFiados = new FiadosTabPage(_fiadoService);
-            _abaFechamento = new FechamentoTabPage(_relatorioService, _vendaService, _exportacaoService);
+            _abaFechamento = new FechamentoTabPage(_relatorioService, _vendaService, _exportacaoService, _produtoService);
 
             // Quando o catálogo muda na aba Produtos, o cardápio da aba Vender precisa refletir isso.
             _abaProdutos.ProdutosAlterados += (s, e) => _abaVender.AtualizarCardapio();

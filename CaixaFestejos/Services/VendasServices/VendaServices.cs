@@ -59,6 +59,54 @@ namespace CaixaFestejos.Services
             return _vendaRepository.ObterResumoPagamento();
         }
 
+        public List<Venda> ListarVendas()
+        {
+            return _vendaRepository.Listar();
+        }
+
+        public Venda? ObterVenda(int vendaId)
+        {
+            return _vendaRepository.BuscarPorId(vendaId);
+        }
+
+        public void EditarVenda(int vendaId, List<ItemPedido> novosItens)
+        {
+            if (novosItens == null || novosItens.Count == 0)
+                throw new InvalidOperationException("A venda deve possuir pelo menos um item.");
+
+            var vendaExistente = _vendaRepository.BuscarPorId(vendaId);
+
+            if (vendaExistente == null)
+                throw new InvalidOperationException("Venda não encontrada.");
+
+            decimal total = novosItens.Sum(i => i.Subtotal);
+            decimal custoTotal = novosItens.Sum(i => i.Custo * i.Quantidade);
+
+            // Recebido e forma de pagamento não mudam aqui: só a composição do pedido está sendo corrigida.
+            decimal troco = vendaExistente.FormaPagamento == FormaPagamento.Fiado
+                ? 0
+                : vendaExistente.Recebido - total;
+
+            if (vendaExistente.FormaPagamento != FormaPagamento.Fiado && vendaExistente.Recebido < total)
+                throw new InvalidOperationException("O novo total ficou maior que o valor recebido nessa venda.");
+
+            vendaExistente.Total = total;
+            vendaExistente.CustoTotal = custoTotal;
+            vendaExistente.Troco = troco;
+
+            vendaExistente.Itens = novosItens.Select(i => new ItemVenda
+            {
+                VendaId = vendaId,
+                ProdutoId = i.ProdutoId,
+                Nome = i.Nome,
+                Preco = i.Preco,
+                Custo = i.Custo,
+                Quantidade = i.Quantidade
+            }).ToList();
+
+            _vendaRepository.Atualizar(vendaExistente);
+        }
+
         public void ZerarVendas()
         {
             _vendaRepository.Zerar();

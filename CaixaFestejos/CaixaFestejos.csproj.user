@@ -4,6 +4,9 @@
     <_LastSelectedProfileId>E:\github\SistemaFinanceiroVoluntario\CaixaFestejos\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Forms\EditarVendaDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Forms\FechamentoTabPage.cs">
       <SubType>Component</SubType>
     </Compile>
