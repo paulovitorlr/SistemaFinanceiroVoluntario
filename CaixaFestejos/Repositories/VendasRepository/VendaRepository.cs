@@ -25,25 +25,23 @@ public class VendaRepository : IVendaRepository
 
             cmdVenda.CommandText = @"
             INSERT INTO Vendas
-            (
-                DataHora,
-                Total,
-                CustoTotal,
-                Recebido,
-                Troco,
-                FormaPagamento,
-                ClienteFiado
-            )
-            VALUES
-            (
-                $dataHora,
-                $total,
-                $custoTotal,
-                $recebido,
-                $troco,
-                $formaPagamento,
-                $clienteFiado
-            );
+(
+    DataHora,
+    Total,
+    CustoTotal,
+    Recebido,
+    Troco,
+    FormaPagamento
+)
+VALUES
+(
+    $dataHora,
+    $total,
+    $custoTotal,
+    $recebido,
+    $troco,
+    $formaPagamento
+);
 
             SELECT last_insert_rowid();";
 
@@ -54,10 +52,7 @@ public class VendaRepository : IVendaRepository
             cmdVenda.Parameters.AddWithValue("$troco", (double)venda.Troco);
             cmdVenda.Parameters.AddWithValue("$formaPagamento", venda.FormaPagamento.ToString());
 
-            cmdVenda.Parameters.AddWithValue(
-                "$clienteFiado",
-                (object?)venda.ClienteFiado ?? DBNull.Value
-            );
+            
 
             vendaId = (long)cmdVenda.ExecuteScalar()!;
             venda.Id = (int)vendaId;
@@ -101,35 +96,8 @@ public class VendaRepository : IVendaRepository
         }
 
 
-        // Cria pendência quando a venda for fiada
-        if (venda.FormaPagamento == FormaPagamento.Fiado)
-        {
-            using var cmdFiado = conn.CreateCommand();
-
-            cmdFiado.Transaction = transaction;
-
-            cmdFiado.CommandText = @"
-            INSERT INTO Fiados
-            (
-                VendaId,
-                Cliente,
-                Valor,
-                Pago
-            )
-            VALUES
-            (
-                $vendaId,
-                $cliente,
-                $valor,
-                0
-            );";
-
-            cmdFiado.Parameters.AddWithValue("$vendaId", vendaId);
-            cmdFiado.Parameters.AddWithValue("$cliente", venda.ClienteFiado!);
-            cmdFiado.Parameters.AddWithValue("$valor", (double)venda.Total);
-
-            cmdFiado.ExecuteNonQuery();
-        }
+        
+        
 
 
         transaction.Commit();
@@ -269,12 +237,6 @@ public class VendaRepository : IVendaRepository
                 ELSE 0
             END), 0) AS TotalPix,
 
-            COALESCE(SUM(CASE
-                WHEN FormaPagamento = 'Fiado'
-                THEN Total
-                ELSE 0
-            END), 0) AS TotalFiado
-
             FROM Vendas;";
 
         using var reader = cmd.ExecuteReader();
@@ -296,13 +258,7 @@ public class VendaRepository : IVendaRepository
         using var conn = _database.AbrirConexao();
         using var transaction = conn.BeginTransaction();
 
-        using (var cmd = conn.CreateCommand())
-        {
-            cmd.Transaction = transaction;
-            cmd.CommandText = "DELETE FROM Fiados WHERE VendaId = $id";
-            cmd.Parameters.AddWithValue("$id", id);
-            cmd.ExecuteNonQuery();
-        }
+        
 
         using (var cmd = conn.CreateCommand())
         {
@@ -328,12 +284,7 @@ public class VendaRepository : IVendaRepository
         using var conn = _database.AbrirConexao();
         using var transaction = conn.BeginTransaction();
 
-        using (var cmd = conn.CreateCommand())
-        {
-            cmd.Transaction = transaction;
-            cmd.CommandText = "DELETE FROM Fiados";
-            cmd.ExecuteNonQuery();
-        }
+       
 
         using (var cmd = conn.CreateCommand())
         {

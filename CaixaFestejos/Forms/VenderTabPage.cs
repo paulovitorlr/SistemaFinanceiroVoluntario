@@ -17,6 +17,7 @@ namespace CaixaFestejos.Forms
     {
         private readonly IProdutoService _produtoService;
         private readonly IVendaService _vendaService;
+        private readonly IFiadoService _fiadoService;
 
         private List<Produto> _produtos = new();
         private readonly List<ItemPedido> _pedidoAtual = new();
@@ -37,11 +38,12 @@ namespace CaixaFestejos.Forms
             20
         };
 
-        public VenderTabPage(IProdutoService produtoService, IVendaService vendaService)
+        public VenderTabPage(IProdutoService produtoService, IVendaService vendaService, IFiadoService fiadoService)
             : base("Vender")
         {
             _produtoService = produtoService;
             _vendaService = vendaService;
+            _fiadoService = fiadoService;
 
             ConstruirLayout();
             AtualizarCardapio();
@@ -445,47 +447,55 @@ namespace CaixaFestejos.Forms
             {
                 var formaPagamento = (FormaPagamento)_cmbFormaPagamento.SelectedItem!;
 
-                _clienteFiado = null;
-
                 if (formaPagamento == FormaPagamento.Fiado)
                 {
-                    _clienteFiado = Microsoft.VisualBasic.Interaction.InputBox(
+                    var cliente = Microsoft.VisualBasic.Interaction.InputBox(
                         "Nome do cliente:",
-                        "Venda fiada",
+                        "Registrar fiado",
                         "");
 
-                    if (string.IsNullOrWhiteSpace(_clienteFiado))
+                    if (string.IsNullOrWhiteSpace(cliente))
                     {
                         MessageBox.Show(
                             FindForm(),
-                            "Informe o nome do cliente para registrar o fiado.",
+                            "Informe o nome do cliente.",
                             "Atenção",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);
 
                         return;
                     }
+
+                    MessageBox.Show((_fiadoService == null).ToString());
+
+                    _fiadoService.RegistrarFiado(cliente, _pedidoAtual);
+
+                    MessageBox.Show(
+                        FindForm(),
+                        "Fiado registrado com sucesso.",
+                        "Sucesso",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
+                else
+                {
+                    _vendaService.RegistrarVenda(
+                        _pedidoAtual,
+                        _numRecebido.Value,
+                        formaPagamento);
 
-                _vendaService.RegistrarVenda(
-                    _pedidoAtual,
-                    _numRecebido.Value,
-                    formaPagamento,
-                    _clienteFiado);
-
-                MessageBox.Show(
-                    FindForm(),
-                    "Venda registrada com sucesso.",
-                    "Venda finalizada",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        FindForm(),
+                        "Venda registrada com sucesso.",
+                        "Venda finalizada",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
 
                 _pedidoAtual.Clear();
 
                 _numRecebido.Value = 0;
                 _cmbFormaPagamento.SelectedIndex = 0;
-
-                _clienteFiado = null;
 
                 RenderPedido();
             }

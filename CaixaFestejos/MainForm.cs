@@ -18,6 +18,8 @@ namespace CaixaFestejos
         private readonly IVendaService _vendaService;
         private readonly IRelatorioService _relatorioService;
         private readonly IExportacaoService _exportacaoService;
+        private readonly IFiadoService _fiadoService;
+
 
         private VenderTabPage _abaVender = null!;
         private ProdutosTabPage _abaProdutos = null!;
@@ -32,12 +34,15 @@ namespace CaixaFestejos
 
             var produtoRepository = new ProdutoRepository(database);
             var vendaRepository = new VendaRepository(database);
+            var fiadoRepository = new FiadoRepository(database);
             var relatorioRepository = new RelatorioRepository(database);
             var exportacaoRepository = new ExportacaoRepository(database, vendaRepository);
 
             _produtoService = new ProdutoService(produtoRepository);
 
             _vendaService = new VendaService(vendaRepository);
+
+            _fiadoService = new FiadoService(fiadoRepository);
 
             _relatorioService = new RelatorioService(relatorioRepository);
 
@@ -54,7 +59,7 @@ namespace CaixaFestejos
 
         private TabControl CriarTabs()
         {
-            _abaVender = new VenderTabPage(_produtoService, _vendaService);
+            _abaVender = new VenderTabPage(_produtoService, _vendaService, _fiadoService);
             _abaProdutos = new ProdutosTabPage(_produtoService);
             _abaFechamento = new FechamentoTabPage(_relatorioService, _vendaService, _exportacaoService);
 

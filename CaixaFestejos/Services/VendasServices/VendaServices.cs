@@ -14,10 +14,9 @@ namespace CaixaFestejos.Services
         }
 
         public void RegistrarVenda(
-     List<ItemPedido> itens,
-     decimal recebido,
-     FormaPagamento formaPagamento,
-     string? clienteFiado)
+            List<ItemPedido> itens,
+            decimal recebido,
+            FormaPagamento formaPagamento)
         {
             if (itens == null || itens.Count == 0)
                 throw new InvalidOperationException("A venda deve possuir pelo menos um item.");
@@ -27,18 +26,9 @@ namespace CaixaFestejos.Services
             if (formaPagamento != FormaPagamento.Fiado && recebido < total)
                 throw new InvalidOperationException("Valor recebido insuficiente.");
 
-            if (formaPagamento == FormaPagamento.Fiado &&
-                string.IsNullOrWhiteSpace(clienteFiado))
-            {
-                throw new InvalidOperationException(
-                    "Informe o nome do cliente para venda fiada.");
-            }
-
             decimal custoTotal = itens.Sum(i => i.Custo * i.Quantidade);
 
-            decimal troco = formaPagamento == FormaPagamento.Fiado
-                ? 0
-                : recebido - total;
+            decimal troco = recebido - total;
 
 
             var venda = new Venda
@@ -49,7 +39,7 @@ namespace CaixaFestejos.Services
                 Recebido = recebido,
                 Troco = troco,
                 FormaPagamento = formaPagamento,
-                ClienteFiado = clienteFiado,
+                
 
                 Itens = itens.Select(i => new ItemVenda
                 {
