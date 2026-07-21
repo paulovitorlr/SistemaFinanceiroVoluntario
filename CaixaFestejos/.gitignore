@@ -1,0 +1,27 @@
+# Compilação .NET
+bin/
+obj/
+
+# Publicações
+Publicacao/
+
+# Banco local
+*.db
+*.db-shm
+*.db-wal
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Arquivos temporários
+*.tmp
+*.log
+
+# Arquivos de build
+*.pdb
+*.dll
+*.exe
