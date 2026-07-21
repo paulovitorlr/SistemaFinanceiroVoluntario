@@ -28,7 +28,14 @@ namespace CaixaFestejos.Forms
         private ComboBox _cmbFormaPagamento = null!;
         private Label _lblTroco = null!;
         private Button _btnFinalizar = null!;
-
+        private readonly decimal[] _cedulasRapidas =
+        {
+            2,
+            5,
+            10,
+            20
+        };
+    
         public VenderTabPage(IProdutoService produtoService, IVendaService vendaService)
             : base("Vender")
         {
@@ -47,6 +54,25 @@ namespace CaixaFestejos.Forms
         {
             _produtos = _produtoService.ListarProdutos();
             RenderCardapio();
+        }
+
+        private Button CriarBotaoCedula(decimal valor)
+        {
+            var btn = new Button
+            {
+                Text = Formatador.Moeda(valor),
+                Width = 70,
+                Height = 35,
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(3)
+            };
+
+            btn.Click += (s, e) =>
+            {
+                _numRecebido.Value = valor;
+            };
+
+            return btn;
         }
 
         private void ConstruirLayout()
@@ -161,9 +187,11 @@ namespace CaixaFestejos.Forms
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 5,
-                RowCount = 1,
+                RowCount = 2,
                 Padding = new Padding(8)
             };
+            painelPagamento.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+            painelPagamento.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
 
             painelPagamento.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             painelPagamento.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
@@ -189,6 +217,19 @@ namespace CaixaFestejos.Forms
                 Anchor = AnchorStyles.Left,
                 Margin = new Padding(0, 8, 0, 0)
             };
+            var painelCaixaRapido = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                Anchor = AnchorStyles.Left,
+                WrapContents = false
+            };
+
+            foreach (var cedula in _cedulasRapidas)
+            {
+                painelCaixaRapido.Controls.Add(
+                    CriarBotaoCedula(cedula)
+                );
+            }
 
             _numRecebido.ValueChanged += (s, e) => AtualizarTroco();
 
@@ -227,6 +268,8 @@ namespace CaixaFestejos.Forms
 
             painelPagamento.Controls.Add(lblRecebido, 0, 0);
             painelPagamento.Controls.Add(_numRecebido, 1, 0);
+            painelPagamento.Controls.Add(painelCaixaRapido, 0, 1);
+            painelPagamento.SetColumnSpan(painelCaixaRapido, 4); // ocupa da coluna 0 até a 3
             painelPagamento.Controls.Add(_cmbFormaPagamento, 2, 0);
             painelPagamento.Controls.Add(_lblTroco, 3, 0);
             painelPagamento.Controls.Add(_btnFinalizar, 4, 0);
