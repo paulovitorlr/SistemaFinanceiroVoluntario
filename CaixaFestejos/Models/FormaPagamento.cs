@@ -3,5 +3,6 @@
 public enum FormaPagamento
 {
     Especie = 0,
-    Pix = 1
+    Pix = 1,
+    Fiado = 2
 }

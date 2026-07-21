@@ -7,4 +7,5 @@ public class ResumoPagamento
     public decimal TotalEspecie { get; set; }
 
     public decimal TotalPix { get; set; }
+    public decimal TotalFiado { get; set; }
 }

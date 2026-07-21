@@ -31,7 +31,8 @@ namespace CaixaFestejos.Data
                     CustoTotal REAL NOT NULL,
                     Recebido REAL NOT NULL,
                     Troco REAL NOT NULL,
-                    FormaPagamento TEXT NOT NULL DEFAULT 'Especie'
+                    FormaPagamento TEXT NOT NULL DEFAULT 'Especie',
+                    ClienteFiado TEXT NULL
                 );
 
                 CREATE TABLE IF NOT EXISTS ItensVenda (
@@ -44,25 +45,77 @@ namespace CaixaFestejos.Data
                     Quantidade INTEGER NOT NULL,
                     FOREIGN KEY (VendaId) REFERENCES Vendas(Id)
                 );
+
+                CREATE TABLE IF NOT EXISTS Fiados (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    VendaId INTEGER NOT NULL,
+                    Cliente TEXT NOT NULL,
+                    Valor REAL NOT NULL,
+                    Pago INTEGER NOT NULL DEFAULT 0,
+                    DataPagamento TEXT NULL,
+                    FOREIGN KEY (VendaId) REFERENCES Vendas(Id)
+                );
             ";
 
             cmd.ExecuteNonQuery();
 
-            using var cmdMigracao = conn.CreateCommand();
 
-            cmdMigracao.CommandText = @"
-                                        ALTER TABLE Vendas
-                                        ADD COLUMN FormaPagamento TEXT NOT NULL DEFAULT 'Especie';
-                                       ";
+            // ==============================
+            // MIGRAÇÕES
+            // ==============================
+
+            // Adiciona FormaPagamento em bancos antigos
+            using var cmdMigracaoFormaPagamento = conn.CreateCommand();
+
+            cmdMigracaoFormaPagamento.CommandText = @"
+                ALTER TABLE Vendas
+                ADD COLUMN FormaPagamento TEXT NOT NULL DEFAULT 'Especie';
+            ";
 
             try
             {
-                cmdMigracao.ExecuteNonQuery();
+                cmdMigracaoFormaPagamento.ExecuteNonQuery();
             }
             catch
             {
-                // A coluna já existe.
+                // Coluna já existe
             }
+
+
+            // Adiciona ClienteFiado em bancos antigos
+            using var cmdMigracaoClienteFiado = conn.CreateCommand();
+
+            cmdMigracaoClienteFiado.CommandText = @"
+                ALTER TABLE Vendas
+                ADD COLUMN ClienteFiado TEXT NULL;
+            ";
+
+            try
+            {
+                cmdMigracaoClienteFiado.ExecuteNonQuery();
+            }
+            catch
+            {
+                // Coluna já existe
+            }
+
+
+            // Garante tabela Fiados em bancos antigos
+            using var cmdMigracaoFiados = conn.CreateCommand();
+
+            cmdMigracaoFiados.CommandText = @"
+                CREATE TABLE IF NOT EXISTS Fiados (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    VendaId INTEGER NOT NULL,
+                    Cliente TEXT NOT NULL,
+                    Valor REAL NOT NULL,
+                    Pago INTEGER NOT NULL DEFAULT 0,
+                    DataPagamento TEXT NULL,
+                    FOREIGN KEY (VendaId) REFERENCES Vendas(Id)
+                );
+            ";
+
+            cmdMigracaoFiados.ExecuteNonQuery();
         }
     }
 }

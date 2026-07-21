@@ -4,7 +4,7 @@ namespace CaixaFestejos.Services;
 
     public interface IVendaService
     {
-        void RegistrarVenda(List<ItemPedido> itens, decimal recebido, FormaPagamento formaPagamento);
+        void RegistrarVenda(List<ItemPedido> itens, decimal recebido, FormaPagamento formaPagamento, string? clienteFiado);
         ResumoPagamento ObterResumoPagamento();
         void ZerarVendas();
     }

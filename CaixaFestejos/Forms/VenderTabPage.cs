@@ -28,6 +28,7 @@ namespace CaixaFestejos.Forms
         private ComboBox _cmbFormaPagamento = null!;
         private Label _lblTroco = null!;
         private Button _btnFinalizar = null!;
+        private string? _clienteFiado;
         private readonly decimal[] _cedulasRapidas =
         {
             2,
@@ -35,7 +36,7 @@ namespace CaixaFestejos.Forms
             10,
             20
         };
-    
+
         public VenderTabPage(IProdutoService produtoService, IVendaService vendaService)
             : base("Vender")
         {
@@ -242,7 +243,13 @@ namespace CaixaFestejos.Forms
 
             _cmbFormaPagamento.Items.Add(FormaPagamento.Especie);
             _cmbFormaPagamento.Items.Add(FormaPagamento.Pix);
+            _cmbFormaPagamento.Items.Add(FormaPagamento.Fiado);
             _cmbFormaPagamento.SelectedIndex = 0;
+
+            _cmbFormaPagamento.SelectedIndexChanged += (s, e) =>
+            {
+                AtualizarTroco();
+            };
 
             _lblTroco = new Label
             {
@@ -405,6 +412,17 @@ namespace CaixaFestejos.Forms
                 return;
             }
 
+            var formaPagamento = (FormaPagamento)_cmbFormaPagamento.SelectedItem!;
+
+            // Fiado não exige recebimento no momento da venda
+            if (formaPagamento == FormaPagamento.Fiado)
+            {
+                _lblTroco.ForeColor = Color.FromArgb(76, 122, 61);
+                _lblTroco.Text = "Pagamento pendente";
+                _btnFinalizar.Enabled = true;
+                return;
+            }
+
             decimal troco = recebido - total;
 
             if (troco < 0)
@@ -425,9 +443,35 @@ namespace CaixaFestejos.Forms
         {
             try
             {
+                var formaPagamento = (FormaPagamento)_cmbFormaPagamento.SelectedItem!;
+
+                _clienteFiado = null;
+
+                if (formaPagamento == FormaPagamento.Fiado)
+                {
+                    _clienteFiado = Microsoft.VisualBasic.Interaction.InputBox(
+                        "Nome do cliente:",
+                        "Venda fiada",
+                        "");
+
+                    if (string.IsNullOrWhiteSpace(_clienteFiado))
+                    {
+                        MessageBox.Show(
+                            FindForm(),
+                            "Informe o nome do cliente para registrar o fiado.",
+                            "Atenção",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+
+                        return;
+                    }
+                }
+
                 _vendaService.RegistrarVenda(
                     _pedidoAtual,
-                    _numRecebido.Value, (FormaPagamento)_cmbFormaPagamento.SelectedItem!);
+                    _numRecebido.Value,
+                    formaPagamento,
+                    _clienteFiado);
 
                 MessageBox.Show(
                     FindForm(),
@@ -440,6 +484,8 @@ namespace CaixaFestejos.Forms
 
                 _numRecebido.Value = 0;
                 _cmbFormaPagamento.SelectedIndex = 0;
+
+                _clienteFiado = null;
 
                 RenderPedido();
             }

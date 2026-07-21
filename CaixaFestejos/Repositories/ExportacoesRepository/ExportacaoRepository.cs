@@ -114,7 +114,12 @@ public class ExportacaoRepository : IExportacaoRepository
         worksheet.Range(linha - 2, 2, linha, 2)
          .Style.NumberFormat.Format = "R$ #,##0.00";
 
-        var resumoRange = worksheet.Range(linha - 3, 1, linha, 2);
+        linha++;
+
+        worksheet.Cell(linha, 1).Value = "Total em Fiado";
+        worksheet.Cell(linha, 2).Value = resumo.TotalFiado;
+
+        var resumoRange = worksheet.Range(linha - 3, 2, linha, 2);
 
         resumoRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
         resumoRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
